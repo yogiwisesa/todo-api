@@ -4,8 +4,10 @@ var bodyParser = require('body-parser');
 var { mongoose } = require('./db/mongoose');
 var { Todo } = require('./models/todo');
 var { User } = require('./models/user');
+var { ObjectId } = require('mongodb');
 
 var app = express();
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
@@ -33,10 +35,36 @@ app.get('/todos', (req, res) => {
     })
 })
 
+// GET /todos/{id}
+app.get('/todos/:id', (req, res) => {
+    var id = req.params.id;
 
-app.listen(3000, () => {
-    console.log('Started on port 3000');
+    // Validate id using isValid
+        // not valid return 404 ~ send back empty send
+    if (!ObjectId.isValid(id)){
+        res.status(404).send();
+        console.log('id is not valid');
+    }
 
+    // findById
+        // success
+            // if todo - send it back
+            // if no todo - send back 404 with empty body
+        // error
+            // send back 400 - send back empty body back
+    Todo.findById(id).then((todo) => {
+        if (!todo){
+            res.status(404).send();
+        }
+
+        res.send({todo})
+    }, (e) => {
+        res.status(404).send();
+    })
+});
+
+app.listen(port, () => {
+    console.log(`Started on port ${port}`);
 })
 
 
