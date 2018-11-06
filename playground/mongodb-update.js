@@ -1,41 +1,38 @@
 // const MongoClient = require('mongodb').MongoClient;
-const { MongoClient, ObjectID } = require('mongodb');
+const {MongoClient, ObjectID} = require('mongodb');
 
-MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, client) => {
-    if (err) {
-        return console.log('Unable to connect to mongoDB server.'); // pakai return agar kode selanjutnya tidak di eksekusi
+MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, db) => {
+  if (err) {
+    return console.log('Unable to connect to MongoDB server');
+  }
+  console.log('Connected to MongoDB server');
+
+  // db.collection('Todos').findOneAndUpdate({
+  //   _id: new ObjectID('57bc4b15b3b6a3801d8c47a2')
+  // }, {
+  //   $set: {
+  //     completed: true
+  //   }
+  // }, {
+  //   returnOriginal: false
+  // }).then((result) => {
+  //   console.log(result);
+  // });
+
+  db.collection('Users').findOneAndUpdate({
+    _id: new ObjectID('57abbcf4fd13a094e481cf2c')
+  }, {
+    $set: {
+      name: 'Andrew'
+    },
+    $inc: {
+      age: 1
     }
-    console.log('Connected to mongoDB server');
-    const db = client.db('TodoApp');
+  }, {
+    returnOriginal: false
+  }).then((result) => {
+    console.log(result);
+  });
 
-    // db.collection('Todos').findOneAndUpdate({
-    //     _id: new ObjectID('5abf6dbad4d49c0ee96dbe52')
-    // }, {
-    //     $set: { // MongoDB update operator, banyak di google
-    //         completed: false
-    //     }
-    // }, {
-    //     returnOriginal: false
-    // }).then((result) => {
-    //     console.log(result);
-    // })
-
-    // ============================================================
-
-    db.collection('Users').findOneAndUpdate({
-        name: 'Jen'
-    }, {
-        $set: {
-            name: 'Yogi'
-        },
-        $inc: {
-            age: 1
-        }
-    }, {
-        returnOriginal: false
-    }).then((result) => {
-        console.log(result);
-    })
-
-    // client.close();
+  // db.close();
 });
